@@ -37,7 +37,7 @@ async def test_telegram_failure_closes_pool_and_session(monkeypatch):
     # Arrange
     from app import __main__ as application
 
-    pool = Mock(close=AsyncMock())
+    pool = Mock(close=AsyncMock(), execute=AsyncMock())
     bot = Mock(
         get_me=AsyncMock(side_effect=ConnectionError("proxy offline")),
         session=Mock(close=AsyncMock()),

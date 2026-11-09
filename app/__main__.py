@@ -9,6 +9,7 @@ from app.db import create_pool
 from app.handlers.echo import router
 from app.health import HealthState, start_health_server
 from app.logging_setup import configure_logging
+from app.storage import ensure_schema
 from app.telegram import create_bot
 
 logger = logging.getLogger("app")
@@ -21,6 +22,7 @@ async def run(settings: Settings) -> None:
     try:
         state.pool = await create_pool(settings)
         logger.info("PostgreSQL подключён: SELECT 1 выполнен.")
+        await ensure_schema(state.pool)
         # Начальная проверка токена и маршрута через прокси ограничена по времени.
         async with asyncio.timeout(30):
             me = await bot.get_me()
