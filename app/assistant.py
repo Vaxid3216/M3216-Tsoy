@@ -33,8 +33,8 @@ class PgStorage:
         rows = await storage.get_history(self._pool, user_id, limit)
         return [{"role": row["role"], "content": row["content"]} for row in rows]
 
-    async def add_exchange(self, user_id: int, question: str, answer: str) -> None:
-        await storage.add_exchange(self._pool, user_id, question, answer)
+    async def add_message(self, user_id: int, role: str, content: str) -> None:
+        await storage.add_message(self._pool, user_id, role, content)
 
     async def reset_history(self, user_id: int) -> None:
         await storage.reset_history(self._pool, user_id)
@@ -143,9 +143,13 @@ class Assistant:
             *history,
             {"role": "user", "content": text},
         ]
+        # Вопрос сохраняется до вызова модели: при сбое он останется в контексте,
+        # и при следующем сообщении модель увидит его. Историю читаем выше, до этой
+        # записи, поэтому текущий вопрос не попадёт в запрос дважды.
+        await self._store.add_message(user_id, "user", text)
         try:
             reply = (await self._llm.complete(messages, user["temperature"])).strip()
         except LLMError as exc:
             return [str(exc)]
-        await self._store.add_exchange(user_id, text, reply)
+        await self._store.add_message(user_id, "assistant", reply)
         return split_message(reply)

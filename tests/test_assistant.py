@@ -41,10 +41,8 @@ class FakeStorage:
     async def history(self, user_id, limit):
         return list(self.messages.get(user_id, []))[-limit:]
 
-    async def add_exchange(self, user_id, question, answer):
-        self.messages.setdefault(user_id, []).extend(
-            [{"role": "user", "content": question}, {"role": "assistant", "content": answer}]
-        )
+    async def add_message(self, user_id, role, content):
+        self.messages.setdefault(user_id, []).append({"role": role, "content": content})
 
     async def reset_history(self, user_id):
         self.messages[user_id] = []
@@ -265,7 +263,7 @@ async def test_settings_shows_mode_model_and_temperature():
 # --- Сценарий 7: ошибка модели превращается в безопасное сообщение ---
 
 
-async def test_llm_error_becomes_safe_message_and_is_not_saved():
+async def test_llm_error_becomes_safe_message_and_keeps_question_without_answer():
     # Arrange
     llm = FakeLLM(error=LLMError("Сервис модели недоступен. Попробуйте позже."))
     assistant, store, _ = make_assistant(llm=llm)
@@ -273,7 +271,21 @@ async def test_llm_error_becomes_safe_message_and_is_not_saved():
     parts = await assistant.answer(1, "вопрос")
     # Assert
     assert parts == ["Сервис модели недоступен. Попробуйте позже."]
-    assert store.messages.get(1, []) == []
+    assert store.messages[1] == [{"role": "user", "content": "вопрос"}]
+
+
+async def test_question_lost_by_error_is_sent_with_next_request_once():
+    # Arrange
+    llm = FakeLLM(error=LLMError("Сервис модели вернул ошибку (HTTP 403)."))
+    assistant, store, _ = make_assistant(llm=llm)
+    await assistant.answer(1, "первый")
+    llm.error = None
+    # Act
+    await assistant.answer(1, "второй")
+    # Assert
+    sent = [(m["role"], m["content"]) for m in llm.calls[1]["messages"][1:]]
+    assert sent == [("user", "первый"), ("user", "второй")]
+    assert [m["role"] for m in store.messages[1]] == ["user", "user", "assistant"]
 
 
 # --- Сценарий 8: длинный ответ делится без потери текста ---
