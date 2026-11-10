@@ -112,6 +112,51 @@ async def test_proxy_is_attached_to_bot_session(settings, proxy):
     await bot.session.close()
 
 
+LLM_ENV = {
+    "LLM_BASE_URL": "https://llm.example/v1/",
+    "LLM_MODEL": "test-model",
+    "LLM_API_KEY": "sk-very-secret",
+}
+
+
+def test_llm_settings_are_read_and_secret_is_hidden(settings, tmp_path):
+    # Arrange
+    environ = {"BOT_TOKEN": TOKEN, "POSTGRES_PASSWORD": "db", **LLM_ENV}
+    # Act
+    config = Settings.load(tmp_path / ".env", environ=environ)
+    config.require_llm()
+    # Assert
+    assert config.llm_base_url == "https://llm.example/v1"
+    assert config.llm_model == "test-model"
+    assert config.history_max_messages == 20
+    assert config.history_max_chars == 6000
+    assert "sk-very-secret" not in repr(config)
+
+
+@pytest.mark.parametrize("missing", ["LLM_BASE_URL", "LLM_MODEL", "LLM_API_KEY"])
+def test_missing_llm_setting_has_safe_error(tmp_path, missing):
+    # Arrange
+    environ = {"BOT_TOKEN": TOKEN, "POSTGRES_PASSWORD": "db", **LLM_ENV}
+    del environ[missing]
+    config = Settings.load(tmp_path / ".env", environ=environ)
+    # Act / Assert
+    with pytest.raises(ConfigError, match=missing) as exc:
+        config.require_llm()
+    assert "sk-very-secret" not in str(exc.value)
+
+
+@pytest.mark.parametrize(
+    "key", ["HISTORY_MAX_MESSAGES", "HISTORY_MAX_CHARS", "LLM_TIMEOUT_SECONDS"]
+)
+@pytest.mark.parametrize("value", ["abc", "0", "-5"])
+def test_invalid_limit_has_safe_error(tmp_path, key, value):
+    # Arrange
+    environ = {"BOT_TOKEN": TOKEN, "POSTGRES_PASSWORD": "db", key: value}
+    # Act / Assert
+    with pytest.raises(ConfigError, match=key):
+        Settings.load(tmp_path / ".env", environ=environ)
+
+
 def test_bad_proxy_does_not_leak_credentials(tmp_path):
     # Arrange
     proxy = "ftp://user:very-secret@host:123"
@@ -181,3 +226,14 @@ def test_log_filter_redacts_secrets_and_exception():
     # Assert
     assert all(secret not in rendered for secret in (TOKEN, "db-secret", "proxy-secret"))
     assert "ValueError" in rendered
+
+
+def test_bad_llm_proxy_does_not_leak_credentials(tmp_path):
+    # Arrange
+    proxy = "ftp://user:very-secret@host:123"
+    environ = {"BOT_TOKEN": TOKEN, "POSTGRES_PASSWORD": "db", "LLM_PROXY_URL": proxy}
+    # Act / Assert
+    with pytest.raises(ConfigError) as exc:
+        Settings.load(tmp_path / ".env", environ=environ)
+    assert "LLM_PROXY_URL" in str(exc.value)
+    assert "very-secret" not in str(exc.value)
