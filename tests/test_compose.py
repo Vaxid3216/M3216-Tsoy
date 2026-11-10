@@ -67,3 +67,50 @@ def test_local_and_cloud_compose_ports_credentials_and_healthchecks(tmp_path):
     assert "app.healthcheck" in cloud["bot"]["healthcheck"]["test"]
     assert cloud["bot"]["healthcheck"]["timeout"] == "20s"
     assert cloud["bot"]["depends_on"]["db"]["condition"] == "service_healthy"
+
+
+@pytest.mark.skipif(not shutil.which("docker"), reason="Docker CLI не установлен")
+def test_llm_settings_from_env_file_reach_the_bot_container(tmp_path):
+    # Arrange
+    root = Path(__file__).resolve().parents[1]
+    env_file = tmp_path / ".env"
+    env_file.write_text(
+        "BOT_TOKEN=test\nPOSTGRES_PASSWORD=db\n"
+        "LLM_BASE_URL=https://llm.example/v1\nLLM_MODEL=test-model\nLLM_API_KEY=sk-test\n"
+        "HISTORY_MAX_MESSAGES=7\n",
+        encoding="utf-8",
+    )
+    environ = {
+        key: value
+        for key, value in os.environ.items()
+        if not key.startswith(("POSTGRES_", "BOT_TOKEN", "COMPOSE_", "LLM_", "HISTORY_"))
+    }
+    # Act
+    result = subprocess.run(
+        [
+            "docker",
+            "compose",
+            "--env-file",
+            str(env_file),
+            "-f",
+            str(root / "compose.yaml"),
+            "--profile",
+            "cloud",
+            "config",
+            "--format",
+            "json",
+        ],
+        env=environ,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        timeout=30,
+    )
+    # Assert
+    assert result.returncode == 0, "Docker Compose не смог разобрать конфигурацию"
+    bot_env = json.loads(result.stdout)["services"]["bot"]["environment"]
+    assert bot_env["LLM_BASE_URL"] == "https://llm.example/v1"
+    assert bot_env["LLM_MODEL"] == "test-model"
+    assert bot_env["LLM_API_KEY"] == "sk-test"
+    assert bot_env["HISTORY_MAX_MESSAGES"] == "7"
+    assert bot_env["LLM_TIMEOUT_SECONDS"] == "30"
