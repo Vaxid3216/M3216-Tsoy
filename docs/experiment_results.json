@@ -1,0 +1,639 @@
+{
+  "date": "2026-11-10",
+  "model": "nvidia/nemotron-3.5-lightning:free",
+  "query": "Что такое рекурсия?",
+  "temperature_runs": [
+    {
+      "run": 1,
+      "temperature": 0.0,
+      "text": "Рекурсия — это техника программирования, когда функция вызывает сама себя для решения задачи, разбивая её на более мелкие части, до тех пор пока не будет выполнено условие выхода.\nШутка: Вчера видел, как кошка пытается войти в интернет, но споткнулась о вай-фай.",
+      "usage": {
+        "prompt_tokens": 448,
+        "completion_tokens": 2461,
+        "total_tokens": 2909,
+        "cost": 0,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0,
+          "upstream_inference_prompt_cost": 0,
+          "upstream_inference_completions_cost": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 2385,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "format": {
+        "words": 41,
+        "joke_line": true,
+        "max_60_words": true,
+        "no_markdown": true,
+        "format_ok": true
+      }
+    },
+    {
+      "run": 2,
+      "temperature": 0.0,
+      "text": "Рекурсия — это когда функция вызывает сама себя для решения задачи, разбивая её на меньшие части, пока не достигнет базового случая.\nШутка: Вчера видел, как облако скачивает обновление, и понял, что погода — это тоже клиент-сервер.",
+      "usage": {
+        "prompt_tokens": 448,
+        "completion_tokens": 3205,
+        "total_tokens": 3653,
+        "cost": 0,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0,
+          "upstream_inference_prompt_cost": 0,
+          "upstream_inference_completions_cost": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 3136,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "format": {
+        "words": 36,
+        "joke_line": true,
+        "max_60_words": true,
+        "no_markdown": true,
+        "format_ok": true
+      }
+    },
+    {
+      "run": 3,
+      "temperature": 0.0,
+      "text": "Рекурсия — это когда функция вызывает сама себя, чтобы решить задачу, разбивая её на более мелкие части, до тех пор пока не выполнится базовый случай.\nШутка: Вчера пытался стать вектором, но проснулся и всё ещё лежу на диване.",
+      "usage": {
+        "prompt_tokens": 448,
+        "completion_tokens": 2859,
+        "total_tokens": 3307,
+        "cost": 0,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0,
+          "upstream_inference_prompt_cost": 0,
+          "upstream_inference_completions_cost": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 2789,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "format": {
+        "words": 38,
+        "joke_line": true,
+        "max_60_words": true,
+        "no_markdown": true,
+        "format_ok": true
+      }
+    },
+    {
+      "run": 4,
+      "temperature": 0.3,
+      "text": "Рекурсия — это когда функция вызывает сама себя, разбивая задачу на более мелкие части до достижения базового условия.\nШутка: У кота выше IQ, чем у моего последнего pull request.",
+      "usage": {
+        "prompt_tokens": 448,
+        "completion_tokens": 4268,
+        "total_tokens": 4716,
+        "cost": 0,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0,
+          "upstream_inference_prompt_cost": 0,
+          "upstream_inference_completions_cost": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 4217,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "format": {
+        "words": 29,
+        "joke_line": true,
+        "max_60_words": true,
+        "no_markdown": true,
+        "format_ok": true
+      }
+    },
+    {
+      "run": 5,
+      "temperature": 0.3,
+      "text": "Рекурсия — это техника программирования, когда функция вызывает сама себя с упрощенными параметрами до достижения базового случая.\nШутка: Вчера пытался договориться с WiFi, но он всё равно не дал пароль.",
+      "usage": {
+        "prompt_tokens": 448,
+        "completion_tokens": 2073,
+        "total_tokens": 2521,
+        "cost": 0,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0,
+          "upstream_inference_prompt_cost": 0,
+          "upstream_inference_completions_cost": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 2012,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "format": {
+        "words": 30,
+        "joke_line": true,
+        "max_60_words": true,
+        "no_markdown": true,
+        "format_ok": true
+      }
+    },
+    {
+      "run": 6,
+      "temperature": 0.3,
+      "text": "Рекурсия — это когда функция вызывает сама себя, разбивая задачу на более мелкие части, пока не достигнет базового условия остановки.\n\nШутка: Я попросил будильник проспать ещё пять минут, и он ответил, что уже ушел на пенсию.",
+      "usage": {
+        "prompt_tokens": 448,
+        "completion_tokens": 2365,
+        "total_tokens": 2813,
+        "cost": 0,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0,
+          "upstream_inference_prompt_cost": 0,
+          "upstream_inference_completions_cost": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 2297,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "format": {
+        "words": 36,
+        "joke_line": true,
+        "max_60_words": true,
+        "no_markdown": true,
+        "format_ok": true
+      }
+    },
+    {
+      "run": 7,
+      "temperature": 0.7,
+      "text": "Рекурсия — это когда функция вызывает сама себя для решения задачи, разбивая её на меньшие части, до достижения базового случая.\nШутка: Вчера видел уточку на парковке, она смотрела на меня так, будто я опоздал с обедом.",
+      "usage": {
+        "prompt_tokens": 448,
+        "completion_tokens": 1554,
+        "total_tokens": 2002,
+        "cost": 0,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0,
+          "upstream_inference_prompt_cost": 0,
+          "upstream_inference_completions_cost": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 1487,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "format": {
+        "words": 36,
+        "joke_line": true,
+        "max_60_words": true,
+        "no_markdown": true,
+        "format_ok": true
+      }
+    },
+    {
+      "run": 8,
+      "temperature": 0.7,
+      "text": "Рекурсия — это когда функция вызывает сама себя, чтобы решить задачу, разбивая её на более простые случаи, до достижения базового условия.\nШутка: Сегодня день беззаботности, и я уже забыл, о чём хотел забыть.",
+      "usage": {
+        "prompt_tokens": 448,
+        "completion_tokens": 3479,
+        "total_tokens": 3927,
+        "cost": 0,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0,
+          "upstream_inference_prompt_cost": 0,
+          "upstream_inference_completions_cost": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 3414,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "format": {
+        "words": 33,
+        "joke_line": true,
+        "max_60_words": true,
+        "no_markdown": true,
+        "format_ok": true
+      }
+    },
+    {
+      "run": 9,
+      "temperature": 0.7,
+      "text": "Рекурсия — это когда функция вызывает сама себя, чтобы решить задачу, разбивая её на более мелкие части.\nШутка: У моей кошки больше багов, чем у моего кода, и она не коммитит.",
+      "usage": {
+        "prompt_tokens": 448,
+        "completion_tokens": 3235,
+        "total_tokens": 3683,
+        "cost": 0,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0,
+          "upstream_inference_prompt_cost": 0,
+          "upstream_inference_completions_cost": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 3177,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "format": {
+        "words": 31,
+        "joke_line": true,
+        "max_60_words": true,
+        "no_markdown": true,
+        "format_ok": true
+      }
+    },
+    {
+      "run": 10,
+      "temperature": 1.0,
+      "text": "Рекурсия — это метод решения задач, когда функция вызывает сама себя с уменьшающимися аргументами до достижения базового случая.\nШутка: Я купил усовершенствованный пульт от телевизора, но он всё равно не помнит, где я положил очки.",
+      "usage": {
+        "prompt_tokens": 448,
+        "completion_tokens": 3213,
+        "total_tokens": 3661,
+        "cost": 0,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0,
+          "upstream_inference_prompt_cost": 0,
+          "upstream_inference_completions_cost": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 3139,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "format": {
+        "words": 35,
+        "joke_line": true,
+        "max_60_words": true,
+        "no_markdown": true,
+        "format_ok": true
+      }
+    },
+    {
+      "run": 11,
+      "temperature": 1.0,
+      "text": "Рекурсия — это техника, когда функция вызывает сама себя, разбивая задачу на похожие подзадачи, до достижения базового условия выхода.\nШутка: Я попросил компьютер приготовить ужин, но он написал алгоритм повторять шаги, пока не исчезнет голод или не кончится продукты.",
+      "usage": {
+        "prompt_tokens": 448,
+        "completion_tokens": 2869,
+        "total_tokens": 3317,
+        "cost": 0,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0,
+          "upstream_inference_prompt_cost": 0,
+          "upstream_inference_completions_cost": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 2788,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "format": {
+        "words": 39,
+        "joke_line": true,
+        "max_60_words": true,
+        "no_markdown": true,
+        "format_ok": true
+      }
+    },
+    {
+      "run": 12,
+      "temperature": 1.0,
+      "text": "Рекурсия — это когда функция вызывает сама себя, чтобы решить задачу, уменьшая входные данные до базового случая.\nШутка: Мой код такой чистый, что даже мой ноутбук просит автографа.",
+      "usage": {
+        "prompt_tokens": 448,
+        "completion_tokens": 3454,
+        "total_tokens": 3902,
+        "cost": 0,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0,
+          "upstream_inference_prompt_cost": 0,
+          "upstream_inference_completions_cost": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 3394,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "format": {
+        "words": 28,
+        "joke_line": true,
+        "max_60_words": true,
+        "no_markdown": true,
+        "format_ok": true
+      }
+    }
+  ],
+  "prompt_comparison": [
+    {
+      "prompt": "basic",
+      "run": 1,
+      "text": "Как рассказчик, я не мог устоять и расскажу вам классическую шутку про рекурсию:\n\nСпросили студента у профессора:\n— Что такое рекурсия?\n\nProfessor thought for a moment and answered:\n— Чтобы понять, что такое рекурсия, сначала нужно понять рекурсию.\n\nСтудент удивился:\n— И что дальше?\nProfessor smiled:\n— И дальше мы возвращаемся к началу и начинаем всё сначала. Но не волнуйтесь, в конце концов вы всё поймете… или уже поняли, зависит от того, с какого уровня смотрите на историю.",
+      "usage": {
+        "prompt_tokens": 41,
+        "completion_tokens": 1255,
+        "total_tokens": 1296,
+        "cost": 0,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0,
+          "upstream_inference_prompt_cost": 0,
+          "upstream_inference_completions_cost": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 1108,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "format": {
+        "words": 78,
+        "joke_line": false,
+        "max_60_words": false,
+        "no_markdown": true,
+        "format_ok": false
+      }
+    },
+    {
+      "prompt": "basic",
+      "run": 2,
+      "text": "As a storyteller, I hear you asking about recursion. So I’ll tell you a tale:\n\n“Once upon a time, a curious soul asked me to explain recursion. I smiled, cleared my throat, and began:  \n**‘To understand recursion, you must first understand recursion.’**  \n\nThe listener nodded, thought for a moment, and asked, **‘And what exactly is recursion, wise storyteller?’**  \nSo I smiled again and said, **‘Exactly.’** 🔄”\n\n(That’s the joke: it loops!)",
+      "usage": {
+        "prompt_tokens": 41,
+        "completion_tokens": 1986,
+        "total_tokens": 2027,
+        "cost": 0,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0,
+          "upstream_inference_prompt_cost": 0,
+          "upstream_inference_completions_cost": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 1867,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "format": {
+        "words": 71,
+        "joke_line": false,
+        "max_60_words": false,
+        "no_markdown": false,
+        "format_ok": false
+      }
+    },
+    {
+      "prompt": "basic",
+      "run": 3,
+      "text": "Как рассказчик, я расскажу вам шутку, которая одновременно и определяет рекурсию:\n\n— Как понять рекурсию?\n— Чтобы понять рекурсию, нужно сначала понять рекурсию.\n\n(И если вы всё ещё думаете: «А что это было?» — значит, шутка сработала, и вы только что на опыте попробовали рекурсию в действии.)",
+      "usage": {
+        "prompt_tokens": 41,
+        "completion_tokens": 772,
+        "total_tokens": 813,
+        "cost": 0,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0,
+          "upstream_inference_prompt_cost": 0,
+          "upstream_inference_completions_cost": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 670,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "format": {
+        "words": 47,
+        "joke_line": false,
+        "max_60_words": true,
+        "no_markdown": true,
+        "format_ok": false
+      }
+    },
+    {
+      "prompt": "improved",
+      "run": 1,
+      "text": "Рекурсия — это когда функция вызывает сама себя для решения задачи, разбивая её на более мелкие части до достижения базового случая.  \nШутка: Вчера видел, как молоко покупает хлеб в супермаркете.",
+      "usage": {
+        "prompt_tokens": 448,
+        "completion_tokens": 1685,
+        "total_tokens": 2133,
+        "cost": 0,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0,
+          "upstream_inference_prompt_cost": 0,
+          "upstream_inference_completions_cost": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 1623,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "format": {
+        "words": 30,
+        "joke_line": true,
+        "max_60_words": true,
+        "no_markdown": true,
+        "format_ok": true
+      }
+    },
+    {
+      "prompt": "improved",
+      "run": 2,
+      "text": "Рекурсия — это метод решения задач, когда функция вызывает сама себя, разбивая задачу на более мелкие части.\nШутка: Вчера купил зеркало, а оно отражало меня с другой стороны.",
+      "usage": {
+        "prompt_tokens": 448,
+        "completion_tokens": 1741,
+        "total_tokens": 2189,
+        "cost": 0,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0,
+          "upstream_inference_prompt_cost": 0,
+          "upstream_inference_completions_cost": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 1688,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "format": {
+        "words": 28,
+        "joke_line": true,
+        "max_60_words": true,
+        "no_markdown": true,
+        "format_ok": true
+      }
+    },
+    {
+      "prompt": "improved",
+      "run": 3,
+      "text": "Рекурсия — это когда функция вызывает сама себя, разбивая задачу на меньшие части до базового случая.\nШутка: Вчера пытался научить золото рыбку писать код, но она все время утонула в комментариях.",
+      "usage": {
+        "prompt_tokens": 448,
+        "completion_tokens": 2184,
+        "total_tokens": 2632,
+        "cost": 0,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0,
+          "upstream_inference_prompt_cost": 0,
+          "upstream_inference_completions_cost": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 2121,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "format": {
+        "words": 31,
+        "joke_line": true,
+        "max_60_words": true,
+        "no_markdown": true,
+        "format_ok": true
+      }
+    }
+  ]
+}
