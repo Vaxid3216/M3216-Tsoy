@@ -28,6 +28,7 @@ class Settings:
     llm_base_url: str = ""
     llm_model: str = ""
     llm_api_key: str = field(default="", repr=False)
+    llm_proxy_url: str = field(default="", repr=False)
     llm_timeout_seconds: int = 30
     history_max_messages: int = 20
     history_max_chars: int = 6000
@@ -62,6 +63,27 @@ class Settings:
             except ValueError:
                 raise ConfigError(f"{key}: нужно целое число больше нуля.") from None
 
+        def proxy_url(key: str) -> str:
+            result = value(key)
+            if result:
+                try:
+                    parsed = urlsplit(result)
+                    if (
+                        parsed.scheme not in {"http", "socks5"}
+                        or not parsed.hostname
+                        or not parsed.port
+                        or parsed.path not in {"", "/"}
+                        or parsed.query
+                        or parsed.fragment
+                    ):
+                        raise ValueError
+                except ValueError:
+                    raise ConfigError(
+                        f"{key}: нужен http://host:port или socks5://host:port; "
+                        "при необходимости добавьте user:password@."
+                    ) from None
+            return result
+
         token = value("BOT_TOKEN")
         try:
             validate_token(token)
@@ -70,24 +92,8 @@ class Settings:
         password = value("POSTGRES_PASSWORD")
         if not password:
             raise ConfigError("POSTGRES_PASSWORD: пароль базы данных не задан.")
-        proxy = value("TELEGRAM_PROXY_URL")
-        if proxy:
-            try:
-                parsed = urlsplit(proxy)
-                if (
-                    parsed.scheme not in {"http", "socks5"}
-                    or not parsed.hostname
-                    or not parsed.port
-                    or parsed.path not in {"", "/"}
-                    or parsed.query
-                    or parsed.fragment
-                ):
-                    raise ValueError
-            except ValueError:
-                raise ConfigError(
-                    "TELEGRAM_PROXY_URL: нужен http://host:port или socks5://host:port; "
-                    "при необходимости добавьте user:password@."
-                ) from None
+        proxy = proxy_url("TELEGRAM_PROXY_URL")
+        llm_proxy = proxy_url("LLM_PROXY_URL")
         level = value("LOG_LEVEL", "INFO").upper()
         if level not in {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}:
             raise ConfigError("LOG_LEVEL: используйте DEBUG, INFO, WARNING, ERROR или CRITICAL.")
@@ -104,6 +110,7 @@ class Settings:
             llm_base_url=value("LLM_BASE_URL").rstrip("/"),
             llm_model=value("LLM_MODEL"),
             llm_api_key=value("LLM_API_KEY"),
+            llm_proxy_url=llm_proxy,
             llm_timeout_seconds=positive_int("LLM_TIMEOUT_SECONDS", "30"),
             history_max_messages=positive_int("HISTORY_MAX_MESSAGES", "20"),
             history_max_chars=positive_int("HISTORY_MAX_CHARS", "6000"),

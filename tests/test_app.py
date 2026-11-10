@@ -226,3 +226,14 @@ def test_log_filter_redacts_secrets_and_exception():
     # Assert
     assert all(secret not in rendered for secret in (TOKEN, "db-secret", "proxy-secret"))
     assert "ValueError" in rendered
+
+
+def test_bad_llm_proxy_does_not_leak_credentials(tmp_path):
+    # Arrange
+    proxy = "ftp://user:very-secret@host:123"
+    environ = {"BOT_TOKEN": TOKEN, "POSTGRES_PASSWORD": "db", "LLM_PROXY_URL": proxy}
+    # Act / Assert
+    with pytest.raises(ConfigError) as exc:
+        Settings.load(tmp_path / ".env", environ=environ)
+    assert "LLM_PROXY_URL" in str(exc.value)
+    assert "very-secret" not in str(exc.value)
