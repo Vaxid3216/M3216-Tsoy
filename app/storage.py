@@ -76,3 +76,19 @@ async def reset_history(db: asyncpg.Pool, user_id: int) -> None:
         "DELETE FROM messages WHERE user_id = $1",
         user_id,
     )
+
+
+async def add_exchange(db: asyncpg.Pool, user_id: int, question: str, answer: str) -> None:
+    """Сохраняет вопрос и ответ вместе: либо обе записи, либо ни одной."""
+    async with db.acquire() as conn:
+        async with conn.transaction():
+            await conn.execute(
+                "INSERT INTO messages (user_id, role, content) VALUES ($1, 'user', $2)",
+                user_id,
+                question,
+            )
+            await conn.execute(
+                "INSERT INTO messages (user_id, role, content) VALUES ($1, 'assistant', $2)",
+                user_id,
+                answer,
+            )
