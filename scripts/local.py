@@ -15,6 +15,16 @@ from app.config import ConfigError, Settings
 from app.db import create_pool
 from scripts.common import CommandError, private_write, run_command
 
+# Настройки языковой модели и истории, которые переносятся в .env.cloud.
+PASSTHROUGH_KEYS = (
+    "LLM_BASE_URL",
+    "LLM_MODEL",
+    "LLM_API_KEY",
+    "LLM_TIMEOUT_SECONDS",
+    "HISTORY_MAX_MESSAGES",
+    "HISTORY_MAX_CHARS",
+)
+
 
 def prepare_env(
     root: Path,
@@ -47,6 +57,14 @@ def prepare_env(
         updates["TELEGRAM_PROXY_URL"] = ask(
             "URL HTTP/SOCKS5 прокси (ввод скрыт; локально Enter — без прокси): "
         ).strip()
+    if cloud:
+        # Настройки модели берём из локального .env, чтобы облачный бот запускался
+        # без ручного редактирования .env.cloud.
+        local = dotenv_values(root / ".env", interpolate=False)
+        for key in PASSTHROUGH_KEYS:
+            value = process.get(key) or local.get(key)
+            if value and not existing.get(key):
+                updates[key] = value
     merged = {**values, **updates}
     if cloud and not merged.get("TELEGRAM_PROXY_URL"):
         raise ConfigError("Для облака необходимо указать внешний прокси Telegram.")

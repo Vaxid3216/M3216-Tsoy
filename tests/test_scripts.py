@@ -41,6 +41,27 @@ def test_cloud_requires_proxy_and_has_separate_password(tmp_path):
     assert config["TELEGRAM_PROXY_URL"] == "socks5://user:p%40ss@proxy:1080"
 
 
+def test_cloud_env_inherits_llm_settings_but_not_local_llm_proxy(tmp_path):
+    # Arrange
+    token = "123456789:ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijk"
+    prepare_env(tmp_path, cloud=False, ask=Mock(side_effect=[token, ""]), environ={})
+    with (tmp_path / ".env").open("a", encoding="utf-8") as file:
+        file.write(
+            "LLM_BASE_URL='https://llm.example/v1'\nLLM_MODEL='m'\nLLM_API_KEY='k'\n"
+            "LLM_PROXY_URL='socks5://127.0.0.1:10808'\n"
+        )
+    # Act
+    path = prepare_env(
+        tmp_path, cloud=True, ask=Mock(side_effect=[token, "http://proxy:3128"]), environ={}
+    )
+    # Assert
+    config = dotenv_values(path)
+    assert config["LLM_BASE_URL"] == "https://llm.example/v1"
+    assert config["LLM_MODEL"] == "m"
+    assert config["LLM_API_KEY"] == "k"
+    assert "LLM_PROXY_URL" not in config
+
+
 def test_cloud_empty_proxy_fails_before_creating_file(tmp_path):
     # Arrange / Act / Assert
     with pytest.raises(ValueError, match="прокси"):

@@ -83,9 +83,7 @@ async def main():
         return
     try:
         # Сначала пробуем напрямую.
-        async with aiohttp.ClientSession(
-            timeout=aiohttp.ClientTimeout(total=60)
-        ) as session:
+        async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=60)) as session:
             await run_checks(session)
     except aiohttp.ClientConnectionError as exc:
         print(f"Прямое подключение не удалось: {exc}")
