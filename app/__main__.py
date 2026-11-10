@@ -68,6 +68,7 @@ def main() -> int:
     args = parser.parse_args()
     try:
         settings = Settings.load(args.env_file)
+        settings.require_llm()
     except ConfigError as exc:
         print(str(exc))
         return 1

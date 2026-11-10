@@ -25,6 +25,12 @@ class Settings:
     postgres_user: str = "bot"
     log_level: str = "INFO"
     health_port: int = 8080
+    llm_base_url: str = ""
+    llm_model: str = ""
+    llm_api_key: str = field(default="", repr=False)
+    llm_timeout_seconds: int = 30
+    history_max_messages: int = 20
+    history_max_chars: int = 6000
 
     @classmethod
     def load(
@@ -46,6 +52,15 @@ class Settings:
                 return result
             except ValueError:
                 raise ConfigError(f"{key}: нужен номер порта от 1 до 65535.") from None
+
+        def positive_int(key: str, default: str) -> int:
+            try:
+                result = int(value(key, default))
+                if result < 1:
+                    raise ValueError
+                return result
+            except ValueError:
+                raise ConfigError(f"{key}: нужно целое число больше нуля.") from None
 
         token = value("BOT_TOKEN")
         try:
@@ -86,4 +101,20 @@ class Settings:
             postgres_user=value("POSTGRES_USER", "bot"),
             log_level=level,
             health_port=port("HEALTH_PORT", "8080"),
+            llm_base_url=value("LLM_BASE_URL").rstrip("/"),
+            llm_model=value("LLM_MODEL"),
+            llm_api_key=value("LLM_API_KEY"),
+            llm_timeout_seconds=positive_int("LLM_TIMEOUT_SECONDS", "30"),
+            history_max_messages=positive_int("HISTORY_MAX_MESSAGES", "20"),
+            history_max_chars=positive_int("HISTORY_MAX_CHARS", "6000"),
         )
+
+    def require_llm(self) -> None:
+        """Проверяет настройки языковой модели; нужна только самому боту."""
+        parsed = urlsplit(self.llm_base_url)
+        if parsed.scheme not in {"http", "https"} or not parsed.hostname:
+            raise ConfigError("LLM_BASE_URL: нужен адрес API вида https://host/v1.")
+        if not self.llm_model:
+            raise ConfigError("LLM_MODEL: имя модели не задано.")
+        if not self.llm_api_key:
+            raise ConfigError("LLM_API_KEY: ключ доступа к API не задан.")
