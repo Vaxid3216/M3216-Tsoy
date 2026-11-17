@@ -77,13 +77,26 @@ def test_llm_settings_from_env_file_reach_the_bot_container(tmp_path):
     env_file.write_text(
         "BOT_TOKEN=test\nPOSTGRES_PASSWORD=db\n"
         "LLM_BASE_URL=https://llm.example/v1\nLLM_MODEL=test-model\nLLM_API_KEY=sk-test\n"
-        "HISTORY_MAX_MESSAGES=7\n",
+        "HISTORY_MAX_MESSAGES=7\n"
+        "SCHEDULE_TIMEZONE=Asia/Tbilisi\n"
+        "WEATHER_PROXY_URL=socks5://proxy.example:1080\n",
         encoding="utf-8",
     )
     environ = {
         key: value
         for key, value in os.environ.items()
-        if not key.startswith(("POSTGRES_", "BOT_TOKEN", "COMPOSE_", "LLM_", "HISTORY_"))
+        if not key.startswith(
+            (
+                "POSTGRES_",
+                "BOT_TOKEN",
+                "COMPOSE_",
+                "LLM_",
+                "HISTORY_",
+                "SCHEDULE_",
+                "WEATHER_",
+                "MCP_",
+            )
+        )
     }
     # Act
     result = subprocess.run(
@@ -114,3 +127,7 @@ def test_llm_settings_from_env_file_reach_the_bot_container(tmp_path):
     assert bot_env["LLM_API_KEY"] == "sk-test"
     assert bot_env["HISTORY_MAX_MESSAGES"] == "7"
     assert bot_env["LLM_TIMEOUT_SECONDS"] == "30"
+    assert bot_env["SCHEDULE_TIMEZONE"] == "Asia/Tbilisi"
+    assert bot_env["WEATHER_PROXY_URL"] == "socks5://proxy.example:1080"
+    assert bot_env["SCHEDULE_FILE"] == "data/schedule.json"
+    assert bot_env["MCP_OWNER_SECRET"] == ""

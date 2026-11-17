@@ -248,7 +248,16 @@ def test_mcp_settings_have_defaults_and_hide_secret(tmp_path):
     assert "s" * 20 not in repr(config)
 
 
-def test_short_or_missing_owner_secret_is_rejected(tmp_path):
+def test_missing_owner_secret_is_generated_per_start(tmp_path):
+    environ = {"BOT_TOKEN": TOKEN, "POSTGRES_PASSWORD": "db"}
+    first = Settings.load(tmp_path / ".env", environ=environ)
+    second = Settings.load(tmp_path / ".env", environ=environ)
+    first.require_mcp()
+    assert len(first.mcp_owner_secret) >= 16
+    assert first.mcp_owner_secret != second.mcp_owner_secret
+
+
+def test_short_owner_secret_is_rejected(tmp_path):
     environ = {"BOT_TOKEN": TOKEN, "POSTGRES_PASSWORD": "db", "MCP_OWNER_SECRET": "short"}
     with pytest.raises(ConfigError, match="MCP_OWNER_SECRET"):
         Settings.load(tmp_path / ".env", environ=environ).require_mcp()

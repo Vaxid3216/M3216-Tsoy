@@ -1,6 +1,7 @@
 """Единственное место чтения и проверки настроек приложения."""
 
 import os
+import secrets
 from collections.abc import Mapping
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -129,7 +130,7 @@ class Settings:
             history_max_chars=positive_int("HISTORY_MAX_CHARS", "6000"),
             schedule_file=value("SCHEDULE_FILE", "data/schedule.json"),
             schedule_timezone=schedule_timezone,
-            mcp_owner_secret=value("MCP_OWNER_SECRET"),
+            mcp_owner_secret=value("MCP_OWNER_SECRET") or secrets.token_hex(32),
             weather_proxy_url=weather_proxy,
         )
 
