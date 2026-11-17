@@ -1,10 +1,12 @@
 """Единственное место чтения и проверки настроек приложения."""
 
 import os
+import secrets
 from collections.abc import Mapping
 from dataclasses import dataclass, field
 from pathlib import Path
 from urllib.parse import urlsplit
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from aiogram.utils.token import TokenValidationError, validate_token
 from dotenv import dotenv_values
@@ -32,6 +34,10 @@ class Settings:
     llm_timeout_seconds: int = 30
     history_max_messages: int = 20
     history_max_chars: int = 6000
+    schedule_file: str = "data/schedule.json"
+    schedule_timezone: str = "Europe/Moscow"
+    mcp_owner_secret: str = field(default="", repr=False)
+    weather_proxy_url: str = field(default="", repr=False)
 
     @classmethod
     def load(
@@ -94,6 +100,14 @@ class Settings:
             raise ConfigError("POSTGRES_PASSWORD: пароль базы данных не задан.")
         proxy = proxy_url("TELEGRAM_PROXY_URL")
         llm_proxy = proxy_url("LLM_PROXY_URL")
+        weather_proxy = proxy_url("WEATHER_PROXY_URL")
+        schedule_timezone = value("SCHEDULE_TIMEZONE", "Europe/Moscow")
+        try:
+            ZoneInfo(schedule_timezone)
+        except (ZoneInfoNotFoundError, ValueError):
+            raise ConfigError(
+                "SCHEDULE_TIMEZONE: нужна зона IANA, например Europe/Moscow."
+            ) from None
         level = value("LOG_LEVEL", "INFO").upper()
         if level not in {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}:
             raise ConfigError("LOG_LEVEL: используйте DEBUG, INFO, WARNING, ERROR или CRITICAL.")
@@ -114,6 +128,10 @@ class Settings:
             llm_timeout_seconds=positive_int("LLM_TIMEOUT_SECONDS", "30"),
             history_max_messages=positive_int("HISTORY_MAX_MESSAGES", "20"),
             history_max_chars=positive_int("HISTORY_MAX_CHARS", "6000"),
+            schedule_file=value("SCHEDULE_FILE", "data/schedule.json"),
+            schedule_timezone=schedule_timezone,
+            mcp_owner_secret=value("MCP_OWNER_SECRET") or secrets.token_hex(32),
+            weather_proxy_url=weather_proxy,
         )
 
     def require_llm(self) -> None:
@@ -125,3 +143,8 @@ class Settings:
             raise ConfigError("LLM_MODEL: имя модели не задано.")
         if not self.llm_api_key:
             raise ConfigError("LLM_API_KEY: ключ доступа к API не задан.")
+
+    def require_mcp(self) -> None:
+        """Проверяет настройки MCP; нужна только самому боту."""
+        if len(self.mcp_owner_secret) < 16:
+            raise ConfigError("MCP_OWNER_SECRET: секрет не короче 16 символов не задан.")

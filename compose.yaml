@@ -42,6 +42,11 @@ services:
       LLM_TIMEOUT_SECONDS: ${LLM_TIMEOUT_SECONDS:-30}
       HISTORY_MAX_MESSAGES: ${HISTORY_MAX_MESSAGES:-20}
       HISTORY_MAX_CHARS: ${HISTORY_MAX_CHARS:-6000}
+      # Лаба 2: MCP-сервер запускается ботом как дочерний процесс из этого же образа.
+      MCP_OWNER_SECRET: ${MCP_OWNER_SECRET:-}
+      SCHEDULE_FILE: ${SCHEDULE_FILE:-data/schedule.json}
+      SCHEDULE_TIMEZONE: ${SCHEDULE_TIMEZONE:-Europe/Moscow}
+      WEATHER_PROXY_URL: ${WEATHER_PROXY_URL:-}
     depends_on:
       db:
         condition: service_healthy
