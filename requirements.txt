@@ -6,3 +6,4 @@ python-dotenv==1.2.3
 mcp==1.30.0
 pydantic==2.13.5
 tzdata==2026.6
+jsonschema==4.26.0

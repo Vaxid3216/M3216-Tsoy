@@ -37,6 +37,8 @@ def configure_logging(settings: Settings) -> None:
                 unquote(proxy.password or ""),
                 settings.llm_api_key,
                 settings.llm_proxy_url,
+                settings.mcp_owner_secret,
+                settings.weather_proxy_url,
             ]
         )
     )

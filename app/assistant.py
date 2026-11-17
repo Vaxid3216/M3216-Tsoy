@@ -21,7 +21,11 @@ class PgStorage:
 
     async def get_user(self, user_id: int) -> dict:
         row = await storage.get_or_create_user(self._pool, user_id)
-        return {"mode": row["mode"], "temperature": float(row["temperature"])}
+        return {
+            "mode": row["mode"],
+            "temperature": float(row["temperature"]),
+            "timezone": row["timezone"],
+        }
 
     async def set_mode(self, user_id: int, mode: str) -> None:
         await storage.set_mode(self._pool, user_id, mode)
@@ -38,6 +42,38 @@ class PgStorage:
 
     async def reset_history(self, user_id: int) -> None:
         await storage.reset_history(self._pool, user_id)
+
+    # ---- лаба 2: агент ----
+
+    async def set_timezone(self, user_id: int, timezone: str) -> None:
+        await storage.set_timezone(self._pool, user_id, timezone)
+
+    async def mark_update_processed(self, update_id: int) -> bool:
+        return await storage.mark_update_processed(self._pool, update_id)
+
+    async def prepare_action(self, user_id, update_id, tool, args, ttl_seconds):
+        return await storage.prepare_action(self._pool, user_id, update_id, tool, args, ttl_seconds)
+
+    async def get_action(self, user_id, action_id):
+        return await storage.get_action(self._pool, user_id, action_id)
+
+    async def begin_execution(self, user_id, action_id):
+        return await storage.begin_execution(self._pool, user_id, action_id)
+
+    async def finish_action(self, user_id, action_id, success):
+        return await storage.finish_action(self._pool, user_id, action_id, success)
+
+    async def cancel_action(self, user_id, action_id):
+        return await storage.cancel_action(self._pool, user_id, action_id)
+
+    async def expire_action(self, user_id, action_id):
+        return await storage.expire_action(self._pool, user_id, action_id)
+
+    async def add_audit(self, user_id, action, check_status, exec_status, **kwargs):
+        await storage.add_audit(self._pool, user_id, action, check_status, exec_status, **kwargs)
+
+    async def last_audit(self, user_id):
+        return await storage.last_audit(self._pool, user_id)
 
 
 def trim_history(

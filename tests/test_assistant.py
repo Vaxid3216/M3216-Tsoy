@@ -6,6 +6,7 @@ from aiogram import Bot, Dispatcher
 from aiogram.methods import SendMessage
 from aiogram.types import Chat, Message, Update, User
 
+from app.agent.service import Agent
 from app.assistant import (
     GENERIC_ERROR,
     TELEGRAM_LIMIT,
@@ -47,6 +48,9 @@ class FakeStorage:
     async def reset_history(self, user_id):
         self.messages[user_id] = []
 
+    async def add_audit(self, *args, **kwargs):
+        pass
+
 
 class FakeLLM:
     def __init__(self, reply="Ответ модели", error=None):
@@ -59,6 +63,19 @@ class FakeLLM:
         if self.error:
             raise self.error
         return self.reply
+
+    async def chat(self, messages, temperature, tools):
+        return {"content": await self.complete(messages, temperature)}
+
+
+class NoToolsMcp:
+    """MCP без инструментов: агент отвечает обычным текстом."""
+
+    tools: list = []
+    resources: list = []
+
+    async def ensure_started(self):
+        return False
 
 
 def make_settings(**overrides):
@@ -339,11 +356,12 @@ def make_update(text, chat_type="private", user_id=42):
 
 
 async def feed(update, assistant):
+    agent = Agent(assistant._store, assistant._llm, NoToolsMcp(), assistant._settings)
     bot = Bot(TOKEN)
     bot.session = AsyncMock()
     dispatcher = Dispatcher()
     dispatcher.include_router(build_router())
-    await dispatcher.feed_update(bot, update, assistant=assistant)
+    await dispatcher.feed_update(bot, update, assistant=assistant, agent=agent)
     calls = [call.args[1] for call in bot.session.call_args_list]
     return [method.text for method in calls if isinstance(method, SendMessage)]
 

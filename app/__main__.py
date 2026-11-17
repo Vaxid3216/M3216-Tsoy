@@ -4,13 +4,16 @@ import logging
 
 from aiogram import Dispatcher
 
+from app.agent.service import Agent
 from app.assistant import Assistant, PgStorage
 from app.config import ConfigError, Settings
 from app.db import create_pool
 from app.handlers.assistant import build_router
+from app.handlers.dedup import UpdateDedupMiddleware
 from app.health import HealthState, start_health_server
 from app.llm import LLMClient
 from app.logging_setup import configure_logging
+from app.mcp_client import McpClient
 from app.storage import ensure_schema
 from app.telegram import create_bot
 
@@ -22,11 +25,17 @@ async def run(settings: Settings) -> None:
     bot = create_bot(settings)
     runner = None
     llm = LLMClient(settings)
+    mcp = McpClient(settings)
     try:
         state.pool = await create_pool(settings)
         logger.info("PostgreSQL подключён: SELECT 1 выполнен.")
         await ensure_schema(state.pool)
-        assistant = Assistant(PgStorage(state.pool), llm, settings)
+        store = PgStorage(state.pool)
+        assistant = Assistant(store, llm, settings)
+        # Недоступный MCP-сервер не мешает запуску: бот работает без инструментов.
+        if not await mcp.start():
+            logger.warning("MCP-сервер недоступен: бот запущен без инструментов.")
+        agent = Agent(store, llm, mcp, settings)
         # Начальная проверка токена и маршрута через прокси ограничена по времени.
         async with asyncio.timeout(30):
             me = await bot.get_me()
@@ -38,6 +47,7 @@ async def run(settings: Settings) -> None:
             )
         logger.info("Telegram доступен. Бот @%s запускает polling.", me.username)
         dispatcher = Dispatcher()
+        dispatcher.update.outer_middleware(UpdateDedupMiddleware(store))
         dispatcher.include_router(build_router())
         runner = await start_health_server(state, settings.health_port)
         state.polling_task = asyncio.create_task(
@@ -45,6 +55,7 @@ async def run(settings: Settings) -> None:
                 bot,
                 db=state.pool,
                 assistant=assistant,
+                agent=agent,
                 allowed_updates=dispatcher.resolve_used_update_types(),
                 close_bot_session=False,
             )
@@ -59,6 +70,7 @@ async def run(settings: Settings) -> None:
         if runner:
             await runner.cleanup()
         await bot.session.close()
+        await mcp.close()
         await llm.close()
         if state.pool:
             try:
@@ -75,6 +87,7 @@ def main() -> int:
     try:
         settings = Settings.load(args.env_file)
         settings.require_llm()
+        settings.require_mcp()
     except ConfigError as exc:
         print(str(exc))
         return 1

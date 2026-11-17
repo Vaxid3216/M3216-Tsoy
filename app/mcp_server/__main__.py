@@ -2,6 +2,7 @@
 
 import asyncio
 import logging
+import os
 import sys
 from datetime import UTC, datetime
 from pathlib import Path
@@ -19,7 +20,20 @@ from app.mcp_server.server import Dependencies, build_server
 async def main() -> None:
     # stdout занят протоколом MCP, журнал только в stderr.
     logging.basicConfig(stream=sys.stderr, level=logging.INFO)
-    settings = Settings.load()
+    # Серверу нужны только БД, расписание, секрет и прокси погоды; токена бота у него нет.
+    env = os.environ
+    settings = Settings(
+        bot_token="",
+        postgres_password=env.get("POSTGRES_PASSWORD", ""),
+        postgres_host=env.get("POSTGRES_HOST", "127.0.0.1"),
+        postgres_port=int(env.get("POSTGRES_PORT", "5432")),
+        postgres_db=env.get("POSTGRES_DB", "bot"),
+        postgres_user=env.get("POSTGRES_USER", "bot"),
+        schedule_file=env.get("SCHEDULE_FILE", "data/schedule.json"),
+        schedule_timezone=env.get("SCHEDULE_TIMEZONE", "Europe/Moscow"),
+        mcp_owner_secret=env.get("MCP_OWNER_SECRET", ""),
+        weather_proxy_url=env.get("WEATHER_PROXY_URL", ""),
+    )
     pool: asyncpg.Pool | None = None
 
     async def create_reminder(

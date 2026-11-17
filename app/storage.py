@@ -82,7 +82,9 @@ async def get_or_create_user(db: asyncpg.Pool, user_id: int) -> asyncpg.Record:
         "INSERT INTO users (user_id) VALUES ($1) ON CONFLICT DO NOTHING",
         user_id,
     )
-    return await db.fetchrow("SELECT mode, temperature FROM users WHERE user_id = $1", user_id)
+    return await db.fetchrow(
+        "SELECT mode, temperature, timezone FROM users WHERE user_id = $1", user_id
+    )
 
 
 async def set_temperature(db: asyncpg.Pool, user_id: int, temperature: float) -> None:
