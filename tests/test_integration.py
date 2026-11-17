@@ -196,3 +196,33 @@ async def test_pending_actions_confirmation_is_atomic_isolated_and_idempotent(da
             await pool.execute("UPDATE pending_actions SET status = 'weird'")
     finally:
         await pool.close()
+
+
+async def test_real_mcp_server_writes_reminder_to_postgres_once(database):
+    # Arrange: настоящие MCP-сервер (дочерний процесс) и PostgreSQL.
+    from app import storage
+    from app.mcp_client import McpClient
+
+    settings, *_ = database
+    settings = replace(settings, mcp_owner_secret="integration-secret-0123456789")
+    pool = await create_pool(settings)
+    client = McpClient(settings)
+    try:
+        await storage.ensure_schema(pool)
+        await storage.get_or_create_user(pool, 7)
+        assert await client.start() is True
+        args = {"text": "интеграция", "remind_at": "2036-01-01T10:00:00+03:00"}
+        # Act
+        first = await client.call_add_reminder(args, 7, "key-1", "Europe/Moscow")
+        again = await client.call_add_reminder(args, 7, "key-1", "Europe/Moscow")
+        unsigned = await client.call_tool("add_reminder", args)
+        # Assert
+        assert first.structured["created"] is True
+        assert again.structured["created"] is False
+        assert again.structured["reminder_id"] == first.structured["reminder_id"]
+        assert unsigned.is_error
+        rows = await storage.list_reminders(pool, 7)
+        assert [row["text"] for row in rows] == ["интеграция"]
+    finally:
+        await client.close()
+        await pool.close()
