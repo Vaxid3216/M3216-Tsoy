@@ -237,3 +237,24 @@ def test_bad_llm_proxy_does_not_leak_credentials(tmp_path):
         Settings.load(tmp_path / ".env", environ=environ)
     assert "LLM_PROXY_URL" in str(exc.value)
     assert "very-secret" not in str(exc.value)
+
+
+def test_mcp_settings_have_defaults_and_hide_secret(tmp_path):
+    environ = {"BOT_TOKEN": TOKEN, "POSTGRES_PASSWORD": "db", "MCP_OWNER_SECRET": "s" * 20}
+    config = Settings.load(tmp_path / ".env", environ=environ)
+    config.require_mcp()
+    assert config.schedule_file == "data/schedule.json"
+    assert config.schedule_timezone == "Europe/Moscow"
+    assert "s" * 20 not in repr(config)
+
+
+def test_short_or_missing_owner_secret_is_rejected(tmp_path):
+    environ = {"BOT_TOKEN": TOKEN, "POSTGRES_PASSWORD": "db", "MCP_OWNER_SECRET": "short"}
+    with pytest.raises(ConfigError, match="MCP_OWNER_SECRET"):
+        Settings.load(tmp_path / ".env", environ=environ).require_mcp()
+
+
+def test_bad_schedule_timezone_is_rejected(tmp_path):
+    environ = {"BOT_TOKEN": TOKEN, "POSTGRES_PASSWORD": "db", "SCHEDULE_TIMEZONE": "Mars/Base"}
+    with pytest.raises(ConfigError, match="SCHEDULE_TIMEZONE"):
+        Settings.load(tmp_path / ".env", environ=environ)

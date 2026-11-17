@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import asyncpg
 
 DEFAULT_MODE = "study"
@@ -20,6 +22,19 @@ CREATE TABLE IF NOT EXISTS messages (
 );
 
 CREATE INDEX IF NOT EXISTS messages_user_id_id_idx ON messages (user_id, id);
+
+ALTER TABLE users ADD COLUMN IF NOT EXISTS timezone TEXT;
+
+CREATE TABLE IF NOT EXISTS reminders (
+    id              BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    owner_id        BIGINT NOT NULL REFERENCES users (user_id) ON DELETE CASCADE,
+    text            TEXT NOT NULL CHECK (char_length(text) BETWEEN 1 AND 500),
+    remind_at       TIMESTAMPTZ NOT NULL,
+    timezone        TEXT NOT NULL,
+    idempotency_key TEXT NOT NULL CHECK (char_length(idempotency_key) BETWEEN 1 AND 128),
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
+    UNIQUE (owner_id, idempotency_key)
+);
 """
 
 
@@ -76,3 +91,32 @@ async def reset_history(db: asyncpg.Pool, user_id: int) -> None:
         "DELETE FROM messages WHERE user_id = $1",
         user_id,
     )
+
+
+async def create_reminder(
+    db: asyncpg.Pool,
+    owner_id: int,
+    text: str,
+    remind_at: datetime,
+    timezone: str,
+    idempotency_key: str,
+) -> tuple[int, bool]:
+    """Создаёт напоминание; повтор с тем же ключом возвращает прежнее (id, False)."""
+    row = await db.fetchrow(
+        "INSERT INTO reminders (owner_id, text, remind_at, timezone, idempotency_key) "
+        "VALUES ($1, $2, $3, $4, $5) "
+        "ON CONFLICT (owner_id, idempotency_key) DO NOTHING RETURNING id",
+        owner_id,
+        text,
+        remind_at,
+        timezone,
+        idempotency_key,
+    )
+    if row is not None:
+        return row["id"], True
+    existing = await db.fetchval(
+        "SELECT id FROM reminders WHERE owner_id = $1 AND idempotency_key = $2",
+        owner_id,
+        idempotency_key,
+    )
+    return existing, False
